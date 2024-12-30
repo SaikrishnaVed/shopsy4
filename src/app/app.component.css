@@ -1,0 +1,56 @@
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+.menu{
+  display: flex;
+  justify-content: space-around;
+  padding-left: 10px;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar .brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4CAF50; /* Customize this color */
+}
+.navbar .menu {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.navbar .menu-allprod {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.navbar .menu a, .navbar .menu-allprod a {
+  text-decoration: none;
+  color: #59da27;
+  font-weight: 500;
+}
+.navbar .menu a:hover {
+  color: #4CAF50; /* Customize hover effect */
+}
+.search-box {
+  flex-grow: 1;
+  max-width: 400px;
+  margin-right: 30px;
+}
+.search-box input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.search-box input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}

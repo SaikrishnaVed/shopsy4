@@ -1,0 +1,36 @@
+<div *ngIf="isLoading" class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div class="cart-container">
+    <h2>Your Cart</h2>
+    <div *ngIf="cartItems?.length === 0" class="empty-cart">
+      <p>Your cart is empty!</p>
+    </div>
+    
+    <!-- Loop through cart items -->
+    <div *ngFor="let item of cartItems" class="cart-item">
+      <div class="cart-item-image">
+        <img [src]="item.imagePath" alt="{{ item.product_name }}" />
+      </div>
+      <div class="cart-item-details">
+        <h3>{{ item.product_name }}</h3>
+        <p class="cart-item-color">Color: {{ item.color }}</p>
+        <p class="cart-item-price">Price: ₹{{ item.list_price | decimalFormat}}</p>
+        <div class="cart-item-quantity">
+          <button class="quantity-button" (click)="decrementItem(item)">-</button>
+          <span>{{ item.count }}</span>
+          <button class="quantity-button" (click)="incrementItem(item)">+</button>
+        </div>
+        <p class="cart-item-total">Total: ₹{{ (item.list_price * item.count) | decimalFormat}}</p>
+        <button class="remove-button" (click)="removeItem(item)">Remove</button>
+      </div>
+    </div>
+  
+    <!-- Checkout Section -->
+    <div *ngIf="cartItems?.length > 0" class="checkout-section">
+      <p class="total-amount">Total Amount: ₹{{ totalAmount | decimalFormat }}</p>
+      <button class="checkout-button" (click)="checkout()">Checkout</button>
+    </div>
+  </div>
+  

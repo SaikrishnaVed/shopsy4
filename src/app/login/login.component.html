@@ -1,0 +1,45 @@
+<div class="login-container">
+  <div class="image-container">
+    <img src="assets/shoppingBag.png" alt="Shopping Bag Logo" />
+  </div>
+    <mat-card>
+        <mat-card-header>
+          <mat-card-title>Login</mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <form #loginForm="ngForm" (ngSubmit)="onLoginSubmit(loginForm)">
+            <mat-form-field class="full-width">
+              <mat-label>Username</mat-label>
+              <input
+                matInput
+                type="text"
+                name="username"
+                [(ngModel)]="loginData.UserName"
+                required
+              />
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                type="password"
+                name="password"
+                [(ngModel)]="loginData.Password"
+                required
+              />
+            </mat-form-field>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!loginForm.valid"
+            >
+              Login
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+</div>

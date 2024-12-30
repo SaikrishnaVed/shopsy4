@@ -1,0 +1,45 @@
+.login-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-gap: 20px;
+  justify-items: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center; /* Center content */
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px; /* Space between the image and the form */
+}
+
+.image-container img {
+  max-width: 300px !important; /* Adjust the image size */
+  max-height: 200px !important;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px; /* Limit the card width */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .login-container {
+    padding: 20px;
+  }
+}

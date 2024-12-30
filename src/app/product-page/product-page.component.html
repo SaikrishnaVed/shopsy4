@@ -1,0 +1,82 @@
+   <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+  
+  <div *ngIf="!isLoading && product" class="product-page-container">
+    <!-- Product Card -->
+    <div class="product-card">
+      <img [src]="product.imagePath" [alt]="product.product_Name" class="product-image" />
+      <div class="product-details">
+        <h2 class="pd product-name">{{ product.product_Name }}</h2>
+        <p class="pd product-price">Price: ₹ {{ product.list_Price }}</p>
+        <p class="pd product-quantity">Stock: {{ product.quantity }}</p>
+        <p class="pd product-color">Color: {{ product.color }}</p>
+        <p class="pd product-year">Model Year: {{ product.model_Year }}</p>
+      </div>
+  
+      <!-- Wishlist Icon -->
+      <button mat-icon-button (click)="toggleWishlist(product)">
+        <mat-icon [color]="product.isfavourite ? 'warn' : ''">
+          {{ product.isfavourite ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </button>
+  
+      <!-- Add to Cart Button -->
+      <div *ngIf="product.cartcount === 0">
+        <button
+          mat-raised-button
+          color="primary"
+          class="add-to-cart-button"
+          (click)="addToCart(product)"
+        >
+          Add to Cart
+        </button>
+      </div>
+  
+      <!-- Cart Controls -->
+      <div *ngIf="product.cartcount > 0" class="cart-controls">
+        <button mat-button (click)="decrementCount(product)">-</button>
+        <span>{{ product.cartcount }}</span>
+        <button mat-button (click)="incrementCount(product)">+</button>
+      </div>
+    </div>
+  
+    <!-- Tabs for Specifications and Ratings -->
+    <mat-tab-group class="tab-container">
+      <!-- Specifications Tab -->
+      <mat-tab label="Specifications">
+        <div class="specifications">
+          <h3>Product Specifications</h3>
+          <ul>
+            <li><strong>Brand:</strong> {{ product.brands.brand_Name }}</li>
+            <li><strong>Category:</strong> {{ product.categories.category_Name }}</li>
+            <li><strong>Model Year:</strong> {{ product.model_Year }}</li>
+            <li><strong>Price:</strong> ₹ {{ product.list_Price }}</li>
+            <li><strong>Stock:</strong> {{ product.quantity }}</li>
+            <li><strong>Color:</strong> {{ product.color }}</li>
+          </ul>
+        </div>
+      </mat-tab>
+  
+      <!-- Ratings and Comments Tab -->
+      <mat-tab label="Ratings & Comments">
+        <div class="ratings-comments">
+          <h3>Customer Ratings & Comments</h3>
+          <div class="rating-item" *ngFor="let comment of dynamicComments">
+            <p><strong>{{ comment.username }}</strong>: {{ comment.comments }}</p>
+            <p>Rating:
+              <span *ngFor="let star of [].constructor(comment.rating)">
+                ⭐
+              </span>
+              ({{ comment.rating }}/5)
+            </p>
+          </div>
+          <div *ngIf="dynamicComments.length === 0">
+            <p><strong>No rating & comments.</strong></p>
+          </div>
+        </div>
+      </mat-tab>      
+
+    </mat-tab-group>
+  </div>
+  
