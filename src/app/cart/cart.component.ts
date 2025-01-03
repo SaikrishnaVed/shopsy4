@@ -10,6 +10,13 @@ export class CartComponent implements OnInit {
   cartItems: any;
   totalAmount: number = 0;
   isLoading = false;
+  // appliedCoupons: Coupon[] = [];
+  isCheckOut = false;
+  appliedCoupon: Coupon | null = null;
+  availableCoupons: Coupon[] = [];
+  validCoupons: Coupon[] = [];
+  couponCode: string = '';
+  
   PurchaseOrder = {
     Id: 0,
     Product_Id: 0,
@@ -23,172 +30,224 @@ export class CartComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCartItems();
+    this.loadCoupons();
   }
 
-// Load cart items from the backend
-loadCartItems(): void {
-  //this.isLoading = true;
-  this.appService.GetCartItems().subscribe({
-    next: (response: any) => {
-      //this.isLoading = false;
-      console.log(response);
-      this.cartItems = response.map((cartItem: any) => ({
-        cart_Id: cartItem.cart_Id,
-        userId: cartItem.userId,
-        product_id: cartItem.product_Id,
-        product_name: cartItem.products[0]?.product_Name,
-        list_price: cartItem.products[0]?.list_Price,
-        color: cartItem.products[0]?.color,
-        imagePath: cartItem.products[0]?.imagePath,
-        count: cartItem.quantity,
-      }));
-      this.calculateTotalAmount();
-    },
-    error: (err) => {
-      //this.isLoading = false;
-      console.error('Error fetching cart items:', err);
-    },
-  });
-}
+  // Load cart items from the backend
+  loadCartItems(): void {
+    this.appService.GetCartItems().subscribe({
+      next: (response: any) => {
+        this.cartItems = response.map((cartItem: any) => ({
+          cart_Id: cartItem.cart_Id,
+          userId: cartItem.userId,
+          product_id: cartItem.product_Id,
+          product_name: cartItem.products[0]?.product_Name,
+          list_price: cartItem.products[0]?.list_Price,
+          color: cartItem.products[0]?.color,
+          imagePath: cartItem.products[0]?.imagePath,
+          count: cartItem.quantity,
+        }));
+        this.calculateTotalAmount(); // Recalculate total amount
+      },
+      error: (err) => {
+        console.error('Error fetching cart items:', err);
+      },
+    });
+  }
 
-// Calculate the total amount
-calculateTotalAmount(): void {
-  this.totalAmount = this.cartItems.reduce(
-    (acc, item) => acc + item.list_price * item.count,
-    0
-  );
-}
-
-// Increment item quantity
-incrementItem(item: CartItem): void {
-  //this.isLoading = true;
-  const updatedItem = {
-    Cart_Id: item.cart_Id,
-    Quantity: item.count + 1,
-    product_Id: item.product_id,
-    userId: Number(localStorage.getItem('userId'))
-  };
-
-  this.appService.UpdateCartItem(item.cart_Id, updatedItem).subscribe({
-    next: () => {
-      //this.isLoading = false;
-      item.count += 1;
-      this.calculateTotalAmount();
-      console.log('Cart item incremented successfully.');
-    },
-    error: (err) => {
-      //this.isLoading = false;
-      console.error('Error incrementing cart item:', err);
-    },
-  });
-}
-
-// Decrement item quantity
-decrementItem(item: CartItem): void {
-  //this.isLoading = true;
-  if (item.count > 1) {
+  
+  // Increment item quantity
+  incrementItem(item: CartItem): void {
     const updatedItem = {
       Cart_Id: item.cart_Id,
-      Quantity: item.count - 1,
+      Quantity: item.count + 1,
       product_Id: item.product_id,
       userId: Number(localStorage.getItem('userId'))
     };
 
     this.appService.UpdateCartItem(item.cart_Id, updatedItem).subscribe({
       next: () => {
-        //this.isLoading = false;
-        item.count -= 1;
-        this.calculateTotalAmount();
-        console.log('Cart item decremented successfully.');
+        item.count += 1;
+        this.calculateTotalAmount(); // Recalculate total amount after update
       },
       error: (err) => {
-        //this.isLoading = false;
-        console.error('Error decrementing cart item:', err);
+        console.error('Error incrementing cart item:', err);
       },
     });
-  } else {
-    this.removeItem(item);
   }
-}
 
-// Remove an item from the cart
-removeItem(item: CartItem): void {
-  //this.isLoading = true;
-  this.appService.DeleteCartItem(item.cart_Id).subscribe({
-    next: () => {
-      //this.isLoading = true;
-      this.cartItems = this.cartItems.filter((cartItem) => cartItem.cart_Id !== item.cart_Id);
-      this.calculateTotalAmount();
-      console.log('Cart item removed successfully.');
-    },
-    error: (err) => {
-      //this.isLoading = false;
-      console.error('Error removing cart item:', err);
-    },
-  });
-}
+  // Decrement item quantity
+  decrementItem(item: CartItem): void {
+    if (item.count > 1) {
+      const updatedItem = {
+        Cart_Id: item.cart_Id,
+        Quantity: item.count - 1,
+        product_Id: item.product_id,
+        userId: Number(localStorage.getItem('userId'))
+      };
 
+      this.appService.UpdateCartItem(item.cart_Id, updatedItem).subscribe({
+        next: () => {
+          item.count -= 1;
+          this.calculateTotalAmount(); // Recalculate total amount after update
+        },
+        error: (err) => {
+          console.error('Error decrementing cart item:', err);
+        },
+      });
+    } else {
+      this.removeItem(item);
+    }
+  }
+
+  // Remove an item from the cart
+  removeItem(item: CartItem): void {
+    this.appService.DeleteCartItem(item.cart_Id).subscribe({
+      next: () => {
+        this.cartItems = this.cartItems.filter((cartItem) => cartItem.cart_Id !== item.cart_Id);
+        this.calculateTotalAmount();
+      },
+      error: (err) => {
+        console.error('Error removing cart item:', err);
+      },
+    });
+  }
+
+  // Proceed to checkout
   checkout(): void {
-    // //this.isLoading = true;
-  const userId = Number(localStorage.getItem('userId'));
+    const userId = Number(localStorage.getItem('userId'));
 
-  if (!userId || !this.cartItems || this.cartItems.length === 0) {
-    alert('No items in the cart to checkout.');
-    return;
+    if (!userId || !this.cartItems || this.cartItems.length === 0) {
+      alert('No items in the cart to checkout.');
+      return;
+    }
+
+    const purchaseOrders: PurchaseOrder[] = this.cartItems.map((item: CartItem) => ({
+      Id: 0,
+      Product_Id: item.product_id,
+      Quantity: item.count,
+      userId: userId,
+      price: item.list_price,
+      DateCreated: new Date(),
+    }));
+
+    this.appService.AddBulkPurchaseOrders(purchaseOrders).subscribe({
+      next: () => {
+        alert('Checkout completed successfully!');
+        this.isCheckOut = true;
+        this.loadCartItems();
+      },
+      error: (err) => {
+        console.error('Error during checkout:', err);
+        alert('Failed to complete checkout. Please try again.');
+      },
+    });
+
+    const couponUsage = {
+      Id: 0,
+      Coupon_Id: this.appliedCoupon.id,
+      Order_Id: 0,
+      user_Id: userId,
+      Usage_Date: new Date(),
+    };
+
+    this.appService.AddToCouponUsage(couponUsage).subscribe({
+      next: () => {
+        console.log('Added to coupon usage.');
+      },
+      error: (err) => {
+        console.error('Error during checkout:', err);
+        alert('Failed to complete checkout. Please try again.');
+      },
+    });
   }
 
-  // // Create purchase order objects for each cart item
-  // const addPurchaseOrderRequest = {
-  //   userId: userId,
-  //   DateCreated: new Date(),
-  // };
 
+  // Fetch available coupons
+  loadCoupons(): void {
+    this.appService.GetAllCoupons().subscribe({
+      next: (response: any) => {
+        this.availableCoupons = response;
+        this.applyValidCoupons();
+      },
+      error: (err) => {
+        console.error('Error fetching coupons:', err);
+      },
+    });
+  }
 
-  // // Create an array of purchase orders from cart items
-  // const purchaseOrders = this.cartItems.map((item: CartItem) => ({
-  //   Product_Id: item.product_id,
-  //   Quantity: item.count,
-  //   userId: userId,
-  //   price: item.list_price,
-  //   DateCreated: new Date(),
-  // }));
+  // Apply the coupon entered by the user
+  applyCoupon(): void {
+    const coupon = this.availableCoupons.find(c => c.code === this.couponCode.trim());
+    
+    if (coupon) {
+      const currentDate = new Date();
+      const startDate = new Date(coupon.start_date);
+      const endDate = new Date(coupon.end_date);
 
-  // Map cart items to purchase orders
-  const purchaseOrders: PurchaseOrder[] = this.cartItems.map((item: CartItem) => ({
-    Id: 0, // Set 0 for new entries, as ID will be auto-generated in the backend
-    Product_Id: item.product_id,
-    Quantity: item.count,
-    userId: userId,
-    price: item.list_price,
-    DateCreated: new Date(), // Set the current date
-  }));
+      if (currentDate >= startDate && currentDate <= endDate && coupon.status === 'active') {
+        this.appliedCoupon = coupon; // Set the applied coupon
+        this.couponCode = ''; // Clear the input
+        this.calculateTotalAmount(); // Recalculate total with the coupon applied
+        alert(`Coupon ${coupon.code} applied successfully!`);
+      } else {
+        alert('This coupon is not valid or expired.');
+      }
+    } else {
+      alert('Invalid coupon code.');
+    }
+  }
 
-  // Send all purchase orders in a single bulk insert request
-  this.appService.AddBulkPurchaseOrders(purchaseOrders).subscribe({
-    next: () => {
-      //this.isLoading = false;
-      alert('Checkout completed successfully!');
-      // Optionally reload cart items or navigate to a success page
-      this.loadCartItems(); 
-    },
-    error: (err) => {
-      //this.isLoading = false;
-      console.error('Error during checkout:', err);
-      alert('Failed to complete checkout. Please try again.');
-    },
-  });
+  // Remove the applied coupon
+  removeCoupon(): void {
+    this.appliedCoupon = null; // Remove the applied coupon
+    this.calculateTotalAmount(); // Recalculate total without the coupon
+    alert('Coupon removed successfully.');
+  }
+
+  // Calculate the total amount after applying/removing coupon
+  calculateTotalAmount(): void {
+    this.totalAmount = this.cartItems.reduce(
+      (acc, item) => acc + item.list_price * item.count,
+      0
+    );
+
+    if (this.appliedCoupon) {
+      if (this.appliedCoupon.discount_type === 'percentage') {
+        this.totalAmount -= (this.totalAmount * this.appliedCoupon.discount_value) / 100;
+      } else if (this.appliedCoupon.discount_type === 'fixed') {
+        this.totalAmount -= this.appliedCoupon.discount_value;
+      }
+
+      // Ensure the total amount doesn't go below zero
+      this.totalAmount = Math.max(this.totalAmount, 0);
+    }
+  }
+
+  // Filter and apply valid coupons
+  applyValidCoupons(): void {
+    const currentDate = new Date();
+    this.validCoupons = this.availableCoupons.filter((coupon) => {
+      const startDate = new Date(coupon.start_date);
+      const endDate = new Date(coupon.end_date);
+      return (
+        currentDate >= startDate &&
+        currentDate <= endDate &&
+        coupon.status === 'active'
+      );
+    });
   }
 }
 
 export class CartItem {
-cart_Id: number;
-userId: number;
-product_id: number;
-product_name: string;
-list_price: number;
-color: string;
-imagePath: string;
-count: number;
+  cart_Id: number;
+  userId: number;
+  product_id: number;
+  product_name: string;
+  list_price: number;
+  color: string;
+  imagePath: string;
+  count: number;
 }
 
 export class PurchaseOrder {
@@ -198,4 +257,15 @@ export class PurchaseOrder {
   userId: number;
   price: number;
   DateCreated: Date;
+}
+
+export class Coupon {
+  id: number;
+  code: string;
+  discount_type: string;
+  discount_value: number;
+  start_date: string;
+  end_date: string;
+  usage_limit: number;
+  status: string;
 }

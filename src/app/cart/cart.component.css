@@ -120,3 +120,52 @@
   }
   
   
+  .availableCoupons{
+    padding: 10px !important;
+    margin: 10px !important;
+    color: black !important;
+  }
+
+  .coupon-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .coupon-section h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .coupon-section input {
+    padding: 10px;
+    font-size: 16px;
+    width: 70%;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+  }
+  
+  .apply-coupon-button,
+  .remove-coupon-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .apply-coupon-button:hover,
+  .remove-coupon-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .applied-coupon {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+  

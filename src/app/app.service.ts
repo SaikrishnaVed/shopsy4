@@ -218,7 +218,7 @@ export class AppService {
     return this.http.post(`https://localhost:44348/api/Auth/UpdateUserRole`, updatedRole, { headers });
   }
 
-    // Get Products
+    // Get users
     GetUserById(userId: number): Observable<any> {
       const token =  localStorage.getItem('token'); // Replace with the actual token or retrieve dynamically.
       const headers = new HttpHeaders({
@@ -234,4 +234,21 @@ export class AppService {
       });
       return this.http.post(`https://localhost:44348/api/Auth/UpdateUserProfile`, updatedData, { headers });
     }
+
+  // Get Coupons
+  GetAllCoupons(): Observable<any> {
+    const token =  localStorage.getItem('token'); // Replace with the actual token or retrieve dynamically.
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get(`https://localhost:44348/api/Coupons/GetCoupons`, { headers });
+  }
+
+  AddToCouponUsage(couponUsage: any): Observable<any> {
+    const token =  localStorage.getItem('token'); // Replace with the actual token or retrieve dynamically.
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.post(`https://localhost:44348/api/Coupons/AddToCouponUsage`, couponUsage, { headers });
+  }
 }

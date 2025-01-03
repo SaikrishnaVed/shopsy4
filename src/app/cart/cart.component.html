@@ -3,34 +3,53 @@
 </div>
 
 <div class="cart-container">
-    <h2>Your Cart</h2>
-    <div *ngIf="cartItems?.length === 0" class="empty-cart">
-      <p>Your cart is empty!</p>
+  <h2>Your Cart</h2>
+
+  <div *ngIf="cartItems?.length === 0" class="empty-cart">
+    <p>Your cart is empty!</p>
+  </div>
+
+  <!-- Loop through cart items -->
+  <div *ngFor="let item of cartItems" class="cart-item">
+    <div class="cart-item-image">
+      <img [src]="item.imagePath" alt="{{ item.product_name }}" />
     </div>
-    
-    <!-- Loop through cart items -->
-    <div *ngFor="let item of cartItems" class="cart-item">
-      <div class="cart-item-image">
-        <img [src]="item.imagePath" alt="{{ item.product_name }}" />
+    <div class="cart-item-details">
+      <h3>{{ item.product_name }}</h3>
+      <p class="cart-item-color">Color: {{ item.color }}</p>
+      <p class="cart-item-price">Price: ₹{{ item.list_price | decimalFormat }}</p>
+      <div class="cart-item-quantity">
+        <button class="quantity-button" (click)="decrementItem(item)">-</button>
+        <span>{{ item.count }}</span>
+        <button class="quantity-button" (click)="incrementItem(item)">+</button>
       </div>
-      <div class="cart-item-details">
-        <h3>{{ item.product_name }}</h3>
-        <p class="cart-item-color">Color: {{ item.color }}</p>
-        <p class="cart-item-price">Price: ₹{{ item.list_price | decimalFormat}}</p>
-        <div class="cart-item-quantity">
-          <button class="quantity-button" (click)="decrementItem(item)">-</button>
-          <span>{{ item.count }}</span>
-          <button class="quantity-button" (click)="incrementItem(item)">+</button>
-        </div>
-        <p class="cart-item-total">Total: ₹{{ (item.list_price * item.count) | decimalFormat}}</p>
-        <button class="remove-button" (click)="removeItem(item)">Remove</button>
-      </div>
-    </div>
-  
-    <!-- Checkout Section -->
-    <div *ngIf="cartItems?.length > 0" class="checkout-section">
-      <p class="total-amount">Total Amount: ₹{{ totalAmount | decimalFormat }}</p>
-      <button class="checkout-button" (click)="checkout()">Checkout</button>
+      <p class="cart-item-total">Total: ₹{{ (item.list_price * item.count) | decimalFormat }}</p>
+      <button class="remove-button" (click)="removeItem(item)">Remove</button>
     </div>
   </div>
-  
+
+  <!-- Coupon Section -->
+  <div class="coupon-section" *ngIf="!isCheckOut">
+    <h3>Apply a Coupon</h3>
+    <div *ngIf="!appliedCoupon">
+      <input type="text" [(ngModel)]="couponCode" placeholder="Enter coupon code" />
+      <button class="apply-coupon-button" (click)="applyCoupon()">Apply Coupon</button>
+    
+      <p style="margin-top: 7px; color: blue;"> Available Coupons </p>
+      <div *ngFor="let coupon of validCoupons">
+          <span class="availableCoupons">{{coupon.code}}</span>
+      </div>
+    </div>
+    
+    <div *ngIf="appliedCoupon && !isCheckOut" class="applied-coupon">
+      <p>Applied Coupon: {{ appliedCoupon.code }}</p>
+      <button class="remove-coupon-button" (click)="removeCoupon()">Remove Coupon</button>
+    </div>
+  </div>
+
+  <!-- Checkout Section -->
+  <div *ngIf="cartItems?.length > 0" class="checkout-section">
+    <p class="total-amount">Total Amount: ₹{{ totalAmount | decimalFormat }}</p>
+    <button class="checkout-button" (click)="checkout()">Checkout</button>
+  </div>
+</div>

@@ -35,7 +35,6 @@ export class AppComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     // this.isAdminPage = localStorage.getItem('role') == 'admin';
     this.username = localStorage.getItem('username');
-
   }
 
   ngOnDestroy() {

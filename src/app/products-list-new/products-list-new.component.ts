@@ -109,6 +109,13 @@ export class ProductsListNewComponent implements AfterViewInit, OnDestroy {
     onReset(form: any): void {
       form.reset();
     }
+
+    reloadCurrentRoute() {
+      let currentUrl = this.router.url;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+          this.router.navigate([currentUrl]);
+      });
+    }
   
     onAddNewProduct(): void {
       localStorage.setItem('isEditMode', 'false');
