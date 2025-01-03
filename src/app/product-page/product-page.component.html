@@ -13,14 +13,14 @@
         <p class="pd product-color">Color: {{ product.color }}</p>
         <p class="pd product-year">Model Year: {{ product.model_Year }}</p>
       </div>
-  
-      <!-- Wishlist Icon -->
-      <button mat-icon-button (click)="toggleWishlist(product)">
-        <mat-icon [color]="product.isfavourite ? 'warn' : ''">
-          {{ product.isfavourite ? 'favorite' : 'favorite_border' }}
-        </mat-icon>
-      </button>
-  
+
+      <!-- Wishlist Love Icon -->
+    <button mat-icon-button (click)="toggleWishlist(product)">
+      <mat-icon [color]="product.Isfavourite ? 'warn' : ''">
+        {{ product.isfavourite ? 'favorite' : 'favorite_border' }}
+      </mat-icon>
+    </button>
+
       <!-- Add to Cart Button -->
       <div *ngIf="product.cartcount === 0">
         <button
@@ -59,7 +59,7 @@
       </mat-tab>
   
       <!-- Ratings and Comments Tab -->
-      <mat-tab label="Ratings & Comments">
+      <!-- <mat-tab label="Ratings & Comments">
         <div class="ratings-comments">
           <h3>Customer Ratings & Comments</h3>
           <div class="rating-item" *ngFor="let comment of dynamicComments">
@@ -75,8 +75,71 @@
             <p><strong>No rating & comments.</strong></p>
           </div>
         </div>
-      </mat-tab>      
+      </mat-tab>       -->
+
+      <!-- Ratings and Comments Tab -->
+      <mat-tab label="Ratings & Comments">
+        <div class="ratings-comments">
+          <h3>Customer Ratings & Comments</h3>
+          <!-- <div class="rating-item" *ngFor="let comment of dynamicComments">
+            <p><strong>{{ comment.username }}</strong>: {{ comment.comments }}</p>
+            <p>
+              Rating:
+              <span *ngFor="let star of [].constructor(comment.rating)">⭐</span>
+              ({{ comment.rating }}/5)
+            </p>
+          </div> -->
+
+          <div class="rating-item" *ngFor="let comment of dynamicComments">
+            <p><strong>{{ comment.username }}</strong>: {{ comment.comments }}</p>
+            <p>
+              Rating:
+              <span *ngFor="let star of [].constructor(comment.rating)">⭐</span>
+              ({{ comment.rating }}/5)
+            </p>
+            <button *ngIf="comment.userId === userId"
+              mat-raised-button
+              color="warn"
+              class="delete-feedback-button"
+              (click)="deleteFeedback(comment)"
+            >
+              Delete
+            </button>
+          </div>
+
+          
+          <div *ngIf="dynamicComments.length === 0">
+            <p><strong>No rating & comments.</strong></p>
+          </div>
+        </div>
+
+        <div class="add-feedback">
+          <h3>Add Your Feedback</h3>
+          <div class="rating-stars">
+            <label for="rating">Rating:</label>
+            <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+              <mat-icon
+                (click)="newRating = i + 1"
+                [color]="i < newRating ? 'warn' : ''"
+                >star</mat-icon
+              >
+            </ng-container>
+          </div>
+          <textarea
+            [(ngModel)]="newComment"
+            placeholder="Write your comment here..."
+          ></textarea>
+          <button mat-raised-button color="primary" (click)="addFeedback()">
+            Submit Feedback
+          </button>
+        </div>
+      </mat-tab>
+
 
     </mat-tab-group>
   </div>
+
+  <!-- <ng-container *ngIf="isChatVisible">
+    <app-chat></app-chat>
+  </ng-container> -->
   

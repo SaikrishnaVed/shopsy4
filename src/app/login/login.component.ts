@@ -39,14 +39,17 @@ export class LoginComponent {
             localStorage.setItem('userId', response?.userId);
             localStorage.setItem('username', response?.username);
             // localStorage.setItem('role', response.role);
-            if(payload.role === 'admin')
-              this.router.navigate(['/products']);
+            if(payload.role === 'admin'){
+              // this.router.navigate(['/products']);
+              this.router.navigate(['/productslist']);
+            }
             else if(payload.role === 'user')
               this.router.navigate(['/allproducts']);
           }
         },
         error: (err) => {
           // console.error('Error fetching product list:', err);
+          alert('Invalid username or password');
           this.router.navigate(['/login']);
           localStorage.clear();
         },

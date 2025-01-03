@@ -1,7 +1,13 @@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <div class="navbar">
   <div class="brand">Shopsy</div>
   <div class="menu-allprod" *ngIf="!isLoginPage && isAdminPage">
-    <a href="#" routerLink="/products" >Products Admin</a>
+    <a href="#" routerLink="/productslist" >Products Admin</a>
+  </div>
+  <div class="menu-allprod" *ngIf="!isLoginPage && isAdminPage">
+    <a href="#" routerLink="/userslist" >Users Admin</a>
   </div>
   <div class="menu-allprod" *ngIf="!isLoginPage">
     <a href="#" routerLink="/allproducts" >All Products</a>
@@ -19,8 +25,10 @@
   <div class="menu">
     <a href="#" *ngIf="isLoginPage" routerLink="/login">Login</a>
     <a routerLink="/register" *ngIf="isLoginPage">Don't have an account? Register here</a>
+
+    <a href="#" style="padding-right: 10px;" *ngIf="!isLoginPage" routerLink="/wishlistitems"> <i style="font-size:24px" class="fa">&#xf004;</i> WishList</a>
     <a href="#" style="padding-right: 10px;" *ngIf="!isLoginPage" routerLink="/openCart">Cart</a>
-    <a href="#" *ngIf="!isLoginPage" style="color: rgb(96, 187, 116);" >{{username}}</a>
+    <a href="#" *ngIf="!isLoginPage" style="color: rgb(96, 187, 116);" routerLink="/profilepage">{{username}}</a>
     <a href="#" *ngIf="!isLoginPage" (click)="logout()">Logout</a>
   </div>
 </div>

@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service';
 import { Router } from '@angular/router';
-import { CartItem } from '../cart/cart.component';
-import { Subscription } from 'rxjs';
 import { DataService } from '../data.service';
 import { ChatService } from '../services/chat.service';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-products-cards',
-  templateUrl: './products-cards.component.html',
-  styleUrls: ['./products-cards.component.css']
+  selector: 'app-wish-list-products',
+  templateUrl: './wish-list-products.component.html',
+  styleUrls: ['./wish-list-products.component.css']
 })
-export class ProductsCardsComponent implements OnInit {
-  userMessage: string = '';
+export class WishListProductsComponent implements OnInit {
+userMessage: string = '';
   messages: string[] = [];
 
   constructor(private appService: AppService, private router: Router, private dataService: DataService, private chatservice: ChatService) { }
@@ -25,6 +24,7 @@ export class ProductsCardsComponent implements OnInit {
     //   this.filter.isWishListFilter = false;
     // }
 
+    this.filter.isWishListFilter = true;
     this.isLoading = true;
     this.subscription = this.dataService.currentMessage.subscribe(
       (message: string) => {
@@ -49,7 +49,7 @@ export class ProductsCardsComponent implements OnInit {
     SortBy: "",
     IsAscending: false,
     Skip: 0,
-    // isWishListFilter: false
+    isWishListFilter: false
   };
   private subscription: Subscription;
   userId: number;
@@ -60,7 +60,7 @@ export class ProductsCardsComponent implements OnInit {
 
   // Get list of products
   GetProductList(): void {
-    this.isLoading = true;
+    //this.isLoading = true;
     this.appService.GetAllProducts(this.filter).subscribe({
       next: (response: any) => {
         //this.isLoading = false;
@@ -75,10 +75,9 @@ export class ProductsCardsComponent implements OnInit {
         } else {
           console.error('No items in response');
         }
-        this.isLoading = false;
       },
       error: (err) => {
-        this.isLoading = false;
+        //this.isLoading = false;
         this.router.navigate(['/login']);
       },
     });

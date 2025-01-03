@@ -1,0 +1,98 @@
+<div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+  
+  <table class="mat-elevation-z8" mat-table [dataSource]="dataSource" matSort>
+    <!-- User Name -->
+    <ng-container matColumnDef="userName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>UserName</th>
+      <td mat-cell *matCellDef="let element">{{ element.userName }}</td>
+    </ng-container>
+  
+    <!-- Email -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+    </ng-container>
+  
+    <!-- Role -->
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container *ngIf="editingRow?.id === element.id; else roleDisplay">
+          <mat-select [(value)]="editingRow.role" placeholder="Select Role">
+            <mat-option *ngFor="let role of roles" [value]="role.value">
+              {{ role.viewValue }}
+            </mat-option>
+          </mat-select>
+        </ng-container>
+        <ng-template #roleDisplay>{{ element.role }}</ng-template>
+      </td>
+    </ng-container>
+  
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container *ngIf="editingRow?.id === element.id; else actionButtons">
+          <button mat-button color="primary" (click)="updateRoleAndStatus()">Save</button>
+          <button mat-button color="warn" (click)="cancelEditing()">Cancel</button>
+        </ng-container>
+        <ng-template #actionButtons>
+          <button mat-icon-button color="primary" (click)="startEditing(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </ng-template>
+      </td>
+    </ng-container>
+  
+    <!-- Phone -->
+    <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+        <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
+      </ng-container>
+    
+      <!-- Gender -->
+      <ng-container matColumnDef="gender">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Gender</th>
+        <td mat-cell *matCellDef="let element">{{ element.gender }}</td>
+      </ng-container>
+    
+      <!-- isActive -->
+      <!-- <ng-container matColumnDef="isActive">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Is Active</th>
+        <td mat-cell *matCellDef="let element">{{ element.isActive }}</td>
+      </ng-container> -->
+
+      <!-- Is Active -->
+  <ng-container matColumnDef="isActive">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Is Active</th>
+    <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="editingRow?.id === element.id; else isActiveDisplay">
+        <mat-select [(value)]="editingRow.isActive">
+          <mat-option [value]="true">Active</mat-option>
+          <mat-option [value]="false">Inactive</mat-option>
+        </mat-select>
+      </ng-container>
+      <ng-template #isActiveDisplay>
+        {{ element.isActive ? 'Active' : 'Inactive' }}
+      </ng-template>
+    </td>
+  </ng-container>
+    
+      <!-- Date of Birth -->
+      <ng-container matColumnDef="dateOfBirth">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of Birth</th>
+        <td mat-cell *matCellDef="let element">{{ element.dateOfBirth }}</td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
+    aria-label="Select page of users"
+  ></mat-paginator>
+  

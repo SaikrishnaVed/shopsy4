@@ -20,10 +20,11 @@ import {LiveAnnouncer} from '@angular/cdk/a11y';
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.css'],
 })
-export class ProductsListComponent implements OnInit, OnDestroy {
-  // private _liveAnnouncer = inject(LiveAnnouncer);
+export class ProductsListComponent implements OnInit {
+  private _liveAnnouncer: any;
   productList: any = [];
   isLoading = false;
+  isReload = false;
   // dataSource = new MatTableDataSource<Product>(this.productList);
   dataSource = new MatTableDataSource(this.productList);
   displayedColumns: string[] = [
@@ -57,68 +58,78 @@ export class ProductsListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.subscription = this.dataService.currentMessage.subscribe(
-      (message: string) => {
-        this.filter.SearchTerm = message;
-        this.GetProductList();
-      }
-    );
+    // this.subscription = this.dataService.currentMessage.subscribe(
+    //   (message: string) => {
+    //     this.filter.SearchTerm = message;
+    //     this.GetProductList();
+    //   }
+    // );
+    this.GetProductList();
     this.isLoading = false;
+    // if(this.isReload){
+    //   window.location.reload();
+    //   this.isReload = false;
+    // }
   }
+
+  // ngAfterViewInit() {
+  //   this.sort.disableClear = true;
+  //   // this.sort.sort({disableClear: true, id:sortEnabledColumns.id,start:'asc'})
+
+  //   // this.dataSource.sort = this.sort;
+  //   // this.dataSource.paginator = this.paginator;
+
+  //   // Listen to pagination events
+  //   this.paginator.page.subscribe(() => {
+  //     this.filter.pageNumber = this.paginator.pageIndex + 1; // Page index starts at 0
+  //     this.filter.pageSize = this.paginator.pageSize;
+  //     this.GetProductList(); // Fetch data with updated pagination
+  //   });
+
+  //   // this.productList.paginator = this.paginator;
+  //   // this.productList.sort = this.sort;
+  // }
 
   ngAfterViewInit() {
-    this.sort.disableClear = true;
-    // this.sort.sort({disableClear: true, id:sortEnabledColumns.id,start:'asc'})
-
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-
-    // Listen to pagination events
-    this.paginator.page.subscribe(() => {
-      this.filter.pageNumber = this.paginator.pageIndex + 1; // Page index starts at 0
-      this.filter.pageSize = this.paginator.pageSize;
-      this.GetProductList(); // Fetch data with updated pagination
-    });
-
-    // this.productList.paginator = this.paginator;
-    // this.productList.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
-  // Navigate to the first page
-  onFirstPage(): void {
-    if (this.filter.pageNumber > 1) {
-      this.filter.pageNumber = 1;
-      this.paginator.pageIndex = 0;
-      this.GetProductList();
-    }
-  }
+  // // Navigate to the first page
+  // onFirstPage(): void {
+  //   if (this.filter.pageNumber > 1) {
+  //     this.filter.pageNumber = 1;
+  //     this.paginator.pageIndex = 0;
+  //     this.GetProductList();
+  //   }
+  // }
 
-  // Navigate to the last page
-  onLastPage(totalPages: number): void {
-    if (this.filter.pageNumber < totalPages) {
-      this.filter.pageNumber = totalPages;
-      this.paginator.pageIndex = totalPages - 1;
-      this.GetProductList();
-    }
-  }
+  // // Navigate to the last page
+  // onLastPage(totalPages: number): void {
+  //   if (this.filter.pageNumber < totalPages) {
+  //     this.filter.pageNumber = totalPages;
+  //     this.paginator.pageIndex = totalPages - 1;
+  //     this.GetProductList();
+  //   }
+  // }
 
-  // Navigate to the previous page
-  onPrevPage(): void {
-    if (this.filter.pageNumber > 1) {
-      this.filter.pageNumber--;
-      this.paginator.pageIndex = this.filter.pageNumber - 1;
-      this.GetProductList();
-    }
-  }
+  // // Navigate to the previous page
+  // onPrevPage(): void {
+  //   if (this.filter.pageNumber > 1) {
+  //     this.filter.pageNumber--;
+  //     this.paginator.pageIndex = this.filter.pageNumber - 1;
+  //     this.GetProductList();
+  //   }
+  // }
 
-  // Navigate to the next page
-  onNextPage(totalPages: number): void {
-    if (this.filter.pageNumber < totalPages) {
-      this.filter.pageNumber++;
-      this.paginator.pageIndex = this.filter.pageNumber - 1;
-      this.GetProductList();
-    }
-  }
+  // // Navigate to the next page
+  // onNextPage(totalPages: number): void {
+  //   if (this.filter.pageNumber < totalPages) {
+  //     this.filter.pageNumber++;
+  //     this.paginator.pageIndex = this.filter.pageNumber - 1;
+  //     this.GetProductList();
+  //   }
+  // }
 
   // /** Announce the change in sort state for assistive technology. */
   // announceSortChange(sortState: Sort) {
@@ -158,20 +169,26 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     // Furthermore, you can customize the message to add additional
     // details about the values being sorted.
 
+    // if (sortState.direction) {
+    //   this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    // } else {
+    //   this.liveAnnouncer.announce('Sorting cleared');
+    // }
+
+    // this.filter.SortBy = sortState.active;
+    // this.filter.IsAscending = sortState.direction === 'asc';
+    // this.GetProductList();
+
     if (sortState.direction) {
-      this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
     } else {
-      this.liveAnnouncer.announce('Sorting cleared');
+      this._liveAnnouncer.announce('Sorting cleared');
     }
-
-    this.filter.SortBy = sortState.active;
-    this.filter.IsAscending = sortState.direction === 'asc';
-    this.GetProductList();
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy(): void {
+  //   this.subscription.unsubscribe();
+  // }
 
   GetProductList(): void {
     this.isLoading = true;

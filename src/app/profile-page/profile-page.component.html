@@ -1,0 +1,91 @@
+<div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+  
+  <div class="update-profile-container">
+    <h2 class="form-title">Update Profile</h2>
+    <form #profileForm="ngForm" (ngSubmit)="onSubmit(profileForm)" class="profile-form">
+      <!-- Username -->
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input
+          type="text"
+          matInput
+          name="userName"
+          [(ngModel)]="user.userName"
+          required
+          minlength="3"
+          class="form-control"
+          placeholder="Enter username"
+        />
+      </div>
+  
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          matInput
+          name="email"
+          [(ngModel)]="user.email"
+          required
+          class="form-control"
+          placeholder="Enter email"
+        />
+      </div>
+  
+      <!-- Phone -->
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input
+          type="tel"
+          matInput
+          name="phone"
+          [(ngModel)]="user.phone"
+          required
+          pattern="^[0-9]{10}$"
+          class="form-control"
+          placeholder="Enter phone number"
+        />
+      </div>
+  
+      <!-- Gender -->
+      <div class="form-group">
+        <label class="form-label">Gender</label>
+        <select
+          matInput
+          name="gender"
+          [(ngModel)]="user.gender"
+          required
+          class="form-select"
+        >
+          <option value="" disabled selected>Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+  
+      <!-- Date of Birth -->
+      <div class="form-group">
+        <label class="form-label">Date of Birth</label>
+        <input
+          type="date"
+          matInput
+          name="dateOfBirth"
+          [(ngModel)]="user.dateOfBirth"
+          required
+          class="form-control"
+        />
+      </div>
+  
+      <!-- Submit Buttons -->
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+          Update Profile
+        </button>
+        <button mat-button type="button" (click)="resetForm(profileForm)">Reset</button>
+      </div>
+    </form>
+  </div>
+  

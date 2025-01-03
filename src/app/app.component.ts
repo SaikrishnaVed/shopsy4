@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { DataService } from './data.service';
 import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   username: string;
 
-  constructor(private router: Router, private data: DataService) {}
+  constructor(private router: Router, private data: DataService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.subscription = this.data.currentMessage.subscribe(message => this.SearchTerm = message)
@@ -24,10 +25,17 @@ export class AppComponent implements OnInit, OnDestroy {
       if (event instanceof NavigationEnd) {
         // Check if the current route is the login page
         this.isLoginPage = (this.router.url === '/login') || (this.router.url === '/register');
+        this.cdr.detectChanges();
       }
     });
     this.isAdminPage = localStorage.getItem('role') == 'admin';
     this.username = localStorage.getItem('username');
+  }
+
+  ngAfterViewInit() {
+    // this.isAdminPage = localStorage.getItem('role') == 'admin';
+    this.username = localStorage.getItem('username');
+
   }
 
   ngOnDestroy() {
@@ -38,6 +46,11 @@ export class AppComponent implements OnInit, OnDestroy {
     console.log('SearchTerm changed:', newSearchTerm);
     localStorage.setItem('SearchTerm', newSearchTerm);
     this.data.changeMessage(newSearchTerm);
+  }
+
+  GetProductsWishList(): void{
+    // sessionStorage.setItem('isWishListFilter', 'true');
+    this.router.navigate(['/allproducts']);
   }
 
   logout(): void {

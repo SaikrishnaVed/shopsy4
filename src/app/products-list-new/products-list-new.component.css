@@ -1,0 +1,45 @@
+/* table {
+    width: 100%;
+  }
+  
+  th.mat-sort-header-sorted {
+    color: black;
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+  }   */
+
+
+
+  
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+/* th.mat-sort-header-sorted {
+  color: black;
+} */
+
+.add-new-product-button{
+  margin: 7px;
+  align-items:flex-end;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full height to center the spinner */
+}

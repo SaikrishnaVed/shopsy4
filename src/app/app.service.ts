@@ -191,4 +191,47 @@ export class AppService {
       });
       return this.http.post(`https://localhost:44348/api/Feedback/AddEditFeedback`, feedback, { headers });
     }
+
+    DeleteFeedback(feedback: any): Observable<any> {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      });
+      return this.http.post(`https://localhost:44348/api/Feedback/DeleteFeedback`, feedback, { headers });
+    }
+    
+    // Get Products
+  GetAllAuthUsers(): Observable<any> {
+    const token =  localStorage.getItem('token'); // Replace with the actual token or retrieve dynamically.
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    var userId = Number(localStorage.getItem('userId'));
+    return this.http.get(`https://localhost:44348/api/Auth/AuthUserList`, { headers });
+  }
+
+  UpdateUserRole(updatedRole: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.post(`https://localhost:44348/api/Auth/UpdateUserRole`, updatedRole, { headers });
+  }
+
+    // Get Products
+    GetUserById(userId: number): Observable<any> {
+      const token =  localStorage.getItem('token'); // Replace with the actual token or retrieve dynamically.
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      });
+      return this.http.get(`https://localhost:44348/api/Auth/GetAuthUserById/${userId}`, { headers });
+    }
+  
+    UpdateUserDetails(updatedData: any): Observable<any> {
+      const token =  localStorage.getItem('token'); // Replace with the actual token or retrieve dynamically.
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      });
+      return this.http.post(`https://localhost:44348/api/Auth/UpdateUserProfile`, updatedData, { headers });
+    }
 }

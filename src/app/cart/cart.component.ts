@@ -90,6 +90,8 @@ decrementItem(item: CartItem): void {
     const updatedItem = {
       Cart_Id: item.cart_Id,
       Quantity: item.count - 1,
+      product_Id: item.product_id,
+      userId: Number(localStorage.getItem('userId'))
     };
 
     this.appService.UpdateCartItem(item.cart_Id, updatedItem).subscribe({

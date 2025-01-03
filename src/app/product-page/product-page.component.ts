@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../app.service';
+// import { ChatService } from '../services/chat.service'; 
 // import { Product } from '../products-list/products-list.component';
 
 @Component({
@@ -18,19 +19,21 @@ export class ProductPageComponent implements OnInit {
     { user: 'David Wilson', comment: 'Satisfactory performance.', rating: 3 },
   ];
   dynamicComments: any[];
+  isChatVisible: boolean = true;
   productList: Product[] = [];
   userId: number;
+  newRating = 0;
+  newComment = '';
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    // private chatservice: ChatService
   ) {}
 
   ngOnInit(): void {
-    // Get product ID from route
-    // this.productId = Number(this.route.snapshot.paramMap.get('id'));
+    this.userId = Number(localStorage.getItem('userId'));
     this.productId = Number(localStorage.getItem('productPageId'));
-    // // Fetch product details
     if (this.productId) {
       this.getProductDetails(this.productId);
       this.fetchFeedbacks(this.productId);
@@ -38,6 +41,8 @@ export class ProductPageComponent implements OnInit {
       alert('Invalid Product ID');
       this.router.navigate(['/allproducts']);
     }
+
+    // alert(product.cartcount);
   }
 
   getProductDetails(productId: number): void {
@@ -179,27 +184,55 @@ export class ProductPageComponent implements OnInit {
       });
     }
 
+    addFeedback(): void {
+      
+      if (this.newRating === 0 || this.newComment.trim() === '') {
+        alert('Please provide both a rating and a comment.');
+        return;
+      }
+      
+      const feedback = {
+        Id: 0, // Assuming 0 for new feedback
+        rating: this.newRating,
+        comments: this.newComment.trim(),
+        userId: Number(localStorage.getItem('userId')),
+        product_Id: this.productId,
+        DateCreated: new Date(),
+        username: localStorage.getItem('username'), // Replace with actual logged-in user
+      };
+      if (confirm('Are you sure you want to update this feedback?')) {
+        this.appService.AddOrUpdateFeedback(feedback).subscribe({
+        next: () => {
+          alert('Feedback added successfully');
+          this.dynamicComments.push(feedback); // Update comments dynamically
+          this.newRating = 0;
+          this.newComment = '';
+          this.fetchFeedbacks(feedback.product_Id);
+        },
+        error: (err) => {
+          console.error('Error adding feedback:', err);
+          alert('Failed to add feedback.');
+        },
+        });
+      }
+    }
 
-    // AddOrUpdateFeedback(): void {
-    //   var productPageCardData = sessionStorage.getItem('productPageCardData');
-    //   const feedback = {
-    //     Id: productPageCardData.id,
-
-    //   }
-    //   this.appService.AddOrUpdateFeedback(feedback).subscribe({
-    //     next: (response: any) => {
-    //       if (response) {
-    //         alert('Feedback updated successfully');
-    //         // this.getProductDetails(feedback.product_Id);
-    //         // this.fetchFeedbacks(feedback.product_Id);
-    //       }
-    //     },
-    //     error: (err) => {
-    //       alert('feedback add or edit failed.');
-    //       console.error('Error during feedback:', err);
-    //     },
-    //   });
-    // }
+    deleteFeedback(feedback: any): void {
+      if (confirm('Are you sure you want to delete this feedback?')) {
+        this.appService.DeleteFeedback(feedback).subscribe({
+          next: () => {
+            alert('Feedback deleted successfully.');
+            // Remove feedback from dynamicComments
+            this.dynamicComments = this.dynamicComments.filter((f) => f.Id !== feedback.Id);
+            this.fetchFeedbacks(feedback.product_Id);
+          },
+          error: (err) => {
+            console.error('Error deleting feedback:', err);
+            alert('Failed to delete feedback.');
+          },
+        });
+      }
+    }    
 }
 
 

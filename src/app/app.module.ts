@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 
 // Import the component
@@ -29,6 +29,14 @@ import { AddProductComponent } from './add-product/add-product.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductPageComponent } from './product-page/product-page.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ChatComponent } from './chat/chat.component';
+import { ProductsListNewComponent } from './products-list-new/products-list-new.component';
+import { WishListProductsComponent } from './wish-list-products/wish-list-products.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { MatSelectModule } from '@angular/material/select';
+import { ProfilePageComponent } from './profile-page/profile-page.component';
+import { DateFormatPipe } from './date-format.pipe';
+// import { MatSnackBar } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -41,6 +49,12 @@ import { MatTabsModule } from '@angular/material/tabs';
     DecimalFormatPipe,
     AddProductComponent,
     ProductPageComponent,
+    ChatComponent,
+    ProductsListNewComponent,
+    WishListProductsComponent,
+    UserListComponent,
+    ProfilePageComponent,
+    DateFormatPipe,
     
   ],
   imports: [
@@ -61,8 +75,11 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatAutocompleteModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSelectModule,
+    // MatSnackBar
   ],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
